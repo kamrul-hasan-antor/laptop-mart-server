@@ -27,11 +27,21 @@ async function run() {
     });
 
     // Get all users
-    app.get("/users", async (req, res) => {
+    app.get("/allUsers", async (req, res) => {
       const query = {};
       const cursor = userCollection.find(query);
       const users = await cursor.toArray();
       res.send(users);
+    });
+
+    app.get("/user", async (req, res) => {
+      let query = {};
+      if (req.query.email) {
+        query = { email: req.query.email };
+      }
+      const cursor = userCollection.find(query);
+      const review = await cursor.toArray();
+      res.send(review);
     });
   } finally {
   }
