@@ -18,6 +18,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const userCollection = client.db("laptopMart").collection("users");
+    const productCollection = client.db("laptopMart").collection("products");
 
     // Add Users
     app.post("/addUsers", async (req, res) => {
@@ -34,14 +35,39 @@ async function run() {
       res.send(users);
     });
 
+    // get usr account
     app.get("/user", async (req, res) => {
       let query = {};
       if (req.query.email) {
         query = { email: req.query.email };
       }
       const cursor = userCollection.find(query);
-      const review = await cursor.toArray();
-      res.send(review);
+      const users = await cursor.toArray();
+      res.send(users);
+    });
+
+    // add products
+    app.post("/addProducts", async (req, res) => {
+      const data = req.body;
+      const result = await productCollection.insertOne(data);
+      res.send(result);
+    });
+
+    // Get all products
+    app.get("/products", async (req, res) => {
+      const query = {};
+      const cursor = productCollection.find(query);
+      const products = await cursor.toArray();
+      res.send(products);
+    });
+
+    app.get("/allCategories/:category", async (req, res) => {
+      const productCategory = req.params.category;
+      const query = { productCategory: productCategory };
+
+      const cursor = productCollection.find(query);
+      const product = await cursor.toArray();
+      res.send(product);
     });
   } finally {
   }
