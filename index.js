@@ -19,6 +19,7 @@ async function run() {
   try {
     const userCollection = client.db("laptopMart").collection("users");
     const productCollection = client.db("laptopMart").collection("products");
+    const orderCollection = client.db("laptopMart").collection("orders");
 
     // Add Users
     app.post("/addUsers", async (req, res) => {
@@ -68,6 +69,13 @@ async function run() {
       const cursor = productCollection.find(query);
       const product = await cursor.toArray();
       res.send(product);
+    });
+
+    // add orders
+    app.post("/addOrders", async (req, res) => {
+      const data = req.body;
+      const result = await orderCollection.insertOne(data);
+      res.send(result);
     });
   } finally {
   }
