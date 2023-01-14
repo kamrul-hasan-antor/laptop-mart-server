@@ -1,9 +1,8 @@
 const express = require("express");
-const cors = require("cors");
 const app = express();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const cors = require("cors");
 const port = process.env.PORT || 5000;
-
 require("dotenv").config();
 
 app.use(cors());
@@ -20,10 +19,19 @@ async function run() {
   try {
     const userCollection = client.db("laptopMart").collection("users");
 
+    // Add Users
     app.post("/addUsers", async (req, res) => {
-      const users = req.body;
-      // const result = await userCollection.insertOne(users)
-      console.log(users);
+      const data = req.body;
+      const result = await userCollection.insertOne(data);
+      res.send(result);
+    });
+
+    // Get all users
+    app.get("/users", async (req, res) => {
+      const query = {};
+      const cursor = userCollection.find(query);
+      const users = await cursor.toArray();
+      res.send(users);
     });
   } finally {
   }
