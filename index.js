@@ -62,6 +62,7 @@ async function run() {
       res.send(products);
     });
 
+    // get categories by id
     app.get("/allCategories/:category", async (req, res) => {
       const productCategory = req.params.category;
       const query = { productCategory: productCategory };
@@ -79,15 +80,33 @@ async function run() {
     });
 
     // get orders by user email
-
     app.get("/orders", async (req, res) => {
       let query = {};
-      if (req.query.id) {
-        query = { id: req.query.id };
+      console.log(req.query.email);
+      if (req.query.email) {
+        query = { userEmail: req.query.email };
       }
       const cursor = orderCollection.find(query);
       const orders = await cursor.toArray();
       res.send(orders);
+    });
+
+    // Get all Buyers
+    app.get("/users/buyers", async (req, res) => {
+      const query = { userType: "buyer" };
+
+      const cursor = userCollection.find(query);
+      const buyer = await cursor.toArray();
+      res.send(buyer);
+    });
+
+    // Get all Sellers
+    app.get("/users/sellers", async (req, res) => {
+      const query = { userType: "seller" };
+
+      const cursor = userCollection.find(query);
+      const seller = await cursor.toArray();
+      res.send(seller);
     });
   } finally {
   }
